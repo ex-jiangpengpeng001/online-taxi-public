@@ -12,12 +12,17 @@ public class NumberCodeController {
     public String numberCode(@PathVariable("size") int size) {
 
         System.out.println("size:"+size);
+        // 生成验证码
+        double mathRandom = (Math.random() * 9 + 1) * (Math.pow(10, size - 1));
+        System.out.println(mathRandom);
+        int resultInt = (int)mathRandom;
+        System.out.println("generator src code:" + resultInt);
 
         JSONObject result = new JSONObject();
         result.put("code", 1);
         result.put("message", "success");
         JSONObject data = new JSONObject();
-        data.put("numberCode", 123456);
+        data.put("numberCode", resultInt);
         result.put("data", data);
 
         return result.toString();
