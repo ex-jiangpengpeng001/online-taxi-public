@@ -1,9 +1,9 @@
 package com.mashibing.apipassenger.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mashibing.apipassenger.remote.ServiceVefificationcodeClient;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.responese.NumberCodeResponse;
+import com.mashibing.internalcommon.responese.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,11 @@ public class VerificationCodeService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    /**
+     * 生成验证码
+     * @param passengerPhone 手机号
+     * @return
+     */
     public ResponseResult generatorCode(String passengerPhone) {
         // 调用验证码服务，获取验证码
         ResponseResult<NumberCodeResponse> numberCodeResponse = serviceVefificationcodeClient.getNumberCode(6);
@@ -34,5 +39,26 @@ public class VerificationCodeService {
 
         // 通过短信服务商，将对应的验证码发送到手机上。阿里短信服务，腾讯短信通，华信，容联
         return ResponseResult.success("");
+    }
+
+    /**
+     * 校验验证码
+     * @param passengerPhone 手机号
+     * @param verificationCode 验证码
+     * @return
+     */
+    public ResponseResult checkCode(String passengerPhone , String verificationCode){
+        // 根据手机号，去redis读取验证码
+
+        // 校验验证码
+
+        // 判断原来是否有用户，并进行对应的处理
+
+        // 颁发令牌
+
+        // 响应
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setToken("token value");
+        return ResponseResult.success(tokenResponse);
     }
 }
