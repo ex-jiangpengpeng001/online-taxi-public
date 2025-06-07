@@ -70,6 +70,9 @@ public class VerificationCodeService {
         if (StringUtils.isBlank(codeRedis)) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
+        if (!verificationCode.trim().equals(codeRedis.trim())){
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
+        }
 
         // 判断原来是否有用户，并进行对应的处理
 
