@@ -1,9 +1,11 @@
 package com.mashibing.apipassenger.service;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.mashibing.apipassenger.remote.ServicePassengerUserClient;
 import com.mashibing.apipassenger.remote.ServiceVefificationcodeClient;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import com.mashibing.internalcommon.responese.NumberCodeResponse;
 import com.mashibing.internalcommon.responese.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class VerificationCodeService {
 
     @Autowired
     private ServiceVefificationcodeClient serviceVefificationcodeClient;
+
+    @Autowired
+    private ServicePassengerUserClient servicePassengerUserClient;
 
     // 乘客验证码到前缀
     private String verificationCodePrefix = "passenger-verification-code-";
@@ -75,6 +80,9 @@ public class VerificationCodeService {
         }
 
         // 判断原来是否有用户，并进行对应的处理
+        VerificationCodeDTO verificationCodeDTO = new VerificationCodeDTO();
+        verificationCodeDTO.setPassengerPhone(passengerPhone);
+        servicePassengerUserClient.loginOrRegister(verificationCodeDTO);
 
         // 颁发令牌
 
