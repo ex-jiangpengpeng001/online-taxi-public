@@ -1,6 +1,5 @@
 package com.mashibing.serviceverificationcode.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.responese.NumberCodeResponse;
 import org.springframework.web.bind.annotation.GetMapping;

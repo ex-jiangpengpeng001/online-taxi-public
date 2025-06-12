@@ -39,7 +39,7 @@ public class JwtUtils {
             builder.withClaim(k, v);
         });
         // 整合过期时间
-        builder.withExpiresAt(date);
+//        builder.withExpiresAt(date);
 
         // 生成 token
         String sign = builder.sign(Algorithm.HMAC256(SIGN));
