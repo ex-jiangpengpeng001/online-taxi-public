@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: serice-map
+
+# 自定义的 key：value
+amap:
+  key: 9fde526a626b02bf16f473049faf2f07
