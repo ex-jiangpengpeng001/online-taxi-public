@@ -12,14 +12,19 @@ public class DirectionService {
     @Autowired
     private MapDirectionClient mapDirectionClient;
 
-    public ResponseResult driving(String depLongitude,String depLatitude, String destLongitude,String destLatitude) {
+    /**
+     * 根据起点经纬度和终点经纬获取距离（米）和时长（分钟）
+     * @param depLongitude
+     * @param depLatitude
+     * @param destLongitude
+     * @param destLatitude
+     * @return
+     */
+    public ResponseResult driving(String depLongitude,String depLatitude, String destLongitude,String destLatitude){
 
         // 调用第三方地图接口
-        mapDirectionClient.direction(depLongitude, depLatitude, destLongitude, destLatitude);
+        DirectionResponse direction = mapDirectionClient.direction(depLongitude, depLatitude, destLongitude, destLatitude);
 
-        DirectionResponse direction = new DirectionResponse();
-        direction.setDistance(123);
-        direction.setDuration(11);
         return ResponseResult.success(direction);
     }
 
