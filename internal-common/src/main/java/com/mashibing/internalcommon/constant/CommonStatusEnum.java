@@ -31,6 +31,11 @@ public enum CommonStatusEnum {
     PRICE_RULE_CHANGED(1303,"计价规则有变化"),
 
     /**
+     * 地图信息：1400-1499
+     */
+    MAP_DISTRICT_ERROR(1400,"请求地图错误"),
+
+    /**
      * 成功
      */
     SUCCESS(1, "success"),
