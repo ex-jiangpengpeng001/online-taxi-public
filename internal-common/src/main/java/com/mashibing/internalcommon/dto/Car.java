@@ -165,20 +165,20 @@ public class Car implements Serializable {
     /**
      * 状态：0:有效，1：失效
      */
-    private Boolean state;
+    private Integer state;
 
     /**
-     * 终端Id
+     * 终端id
      */
     private String tid;
 
     /**
-     * 轨迹ID
+     * 轨迹id
      */
     private String trid;
 
     /**
-     * 轨迹名称
+     * 轨迹name
      */
     private String trname;
 
