@@ -4,12 +4,17 @@ import com.mashibing.apiDriver.remote.ServiceDriverUserClient;
 import com.mashibing.apiDriver.remote.ServiceVerificationcodeClient;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.DriverCarConstants;
+import com.mashibing.internalcommon.constant.IdentityConstants;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.responese.DriverUserExistsResponse;
 import com.mashibing.internalcommon.responese.NumberCodeResponse;
+import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -20,6 +25,9 @@ public class VerificationCodeService {
 
     @Autowired
     private ServiceVerificationcodeClient serviceVerificationcodeClient;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     public ResponseResult checkAndsendVerificationCode(String driverPhone){
         // 查询 service-driver-user，该手机号的司机是否存在
@@ -38,6 +46,8 @@ public class VerificationCodeService {
         // 调用第三方发生验证码,第三方：阿里短信服务，腾讯，华信，容联
 
         // 存入reids。1：key，2：存入value
+        String key = RedisPrefixUtils.generatorKeyByPhone(driverPhone, IdentityConstants.DRIVER_IDENTITY);
+        stringRedisTemplate.opsForValue().set(key, numberCode+"", 2, TimeUnit.MINUTES);
 
         return ResponseResult.success("");
     }
