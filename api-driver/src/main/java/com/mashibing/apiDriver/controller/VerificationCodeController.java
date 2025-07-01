@@ -22,4 +22,14 @@ public class VerificationCodeController {
         log.info("司机的号码：{}", driverPhone);
         return verificationCodeService.checkAndsendVerificationCode(driverPhone);
     }
+
+    @PostMapping("/verification-code-check")
+    public ResponseResult checkVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO){
+
+        String driverPhone = verificationCodeDTO.getDriverPhone();
+        String verificationCode = verificationCodeDTO.getVerificationCode();
+
+        log.info("手机号"+driverPhone+",验证码："+verificationCode);
+        return verificationCodeService.checkCode(driverPhone,verificationCode);
+    }
 }
