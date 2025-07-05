@@ -1,0 +1,20 @@
+服务创建：
+{
+    "errcode": 10000,
+    "errmsg": "OK",
+    "data": {
+        "name": "JppService",
+        "sid": 1050270
+    }
+}
+
+终端创建：
+{
+    "errcode": 10000,
+    "errmsg": "OK",
+    "data": {
+        "name": "宝马1",
+        "tid": 1369150016,
+        "sid": 1050270
+    }
+}
