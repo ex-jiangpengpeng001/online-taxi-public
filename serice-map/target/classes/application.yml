@@ -17,3 +17,5 @@ spring:
 # 自定义的 key：value
 amap:
   key: 9fde526a626b02bf16f473049faf2f07
+  #服务id，服务名称：JppService
+  sid: 1050287
