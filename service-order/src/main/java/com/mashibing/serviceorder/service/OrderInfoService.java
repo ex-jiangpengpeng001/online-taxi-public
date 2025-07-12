@@ -1,11 +1,15 @@
 package com.mashibing.serviceorder.service;
 
+import com.mashibing.internalcommon.constant.OrderConstants;
+import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -13,10 +17,9 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author JPP
- * @since 2025-07-10
+ * @since 2025-07-12
  */
 @Service
-@Slf4j
 public class OrderInfoService {
 
     @Autowired
@@ -28,7 +31,19 @@ public class OrderInfoService {
      * @return
      */
     public ResponseResult add(OrderRequest orderRequest) {
+        // 创建订单
+        OrderInfo orderInfo = new OrderInfo();
 
-        return ResponseResult.success("");
+        BeanUtils.copyProperties(orderRequest,orderInfo);
+
+        orderInfo.setOrderStatus(OrderConstants.ORDER_START);
+
+        LocalDateTime now = LocalDateTime.now();
+        orderInfo.setGmtCreate(now);
+        orderInfo.setGmtModified(now);
+
+        orderInfoMapper.insert(orderInfo);
+        return ResponseResult.success();
     }
+
 }
