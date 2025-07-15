@@ -1,5 +1,6 @@
 package com.mashibing.serviceprice.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
@@ -29,14 +30,17 @@ public class ForecastPriceService {
     private PriceRuleMapper priceRuleMapper;
 
     /**
-     * 根据 出发地和目的地经纬度 计算预估价格
+     * 计算预估价格
      * @param depLongitude
      * @param depLatitude
      * @param destLongitude
      * @param destLatitude
+     * @param cityCode
+     * @param vehicleType
      * @return
      */
-    public ResponseResult forecastPrice(String depLongitude, String depLatitude, String destLongitude, String destLatitude) {
+    public ResponseResult forecastPrice(String depLongitude, String depLatitude, String destLongitude, String destLatitude,
+                                        String cityCode, String vehicleType){
         log.info("出发地经度："+depLongitude);
         log.info("出发地纬度："+depLatitude);
         log.info("目的地经度："+destLongitude);
@@ -54,10 +58,13 @@ public class ForecastPriceService {
         log.info(("距离："+distance+",时长："+duration));
 
         log.info("读取计价规则");
-        Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("city_code", "110000");
-        queryMap.put("vehicle_type", "1");
-        List<PriceRule> priceRules = priceRuleMapper.selectByMap(queryMap);
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("city_code",cityCode);
+        queryWrapper.eq("vehicle_type",vehicleType);
+        queryWrapper.orderByDesc("fare_version");
+
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
         if (priceRules.size() == 0){
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
@@ -70,6 +77,10 @@ public class ForecastPriceService {
 
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
         forecastPriceResponse.setPrice(price);
+        forecastPriceResponse.setCityCode(cityCode);
+        forecastPriceResponse.setVehicleType(vehicleType);
+        forecastPriceResponse.setFareType(priceRule.getFareType());
+        forecastPriceResponse.setFareVersion(priceRule.getFareVersion());
 
         return ResponseResult.success(forecastPriceResponse);
     }
