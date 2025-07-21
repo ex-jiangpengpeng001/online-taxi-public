@@ -7,13 +7,16 @@ import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.internalcommon.request.PriceRuleIsNewRequest;
+import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -32,6 +35,9 @@ public class OrderInfoService {
     @Autowired
     private ServicePriceClient servicePriceClient;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     /**
      * 新建订单
      * @param orderRequest
@@ -47,6 +53,11 @@ public class OrderInfoService {
         if (!(aNew.getData())){
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
         }
+
+        // 需要判断 下单的设备是否是 黑名单设备
+//        if (isBlackDevice(orderRequest)) {
+//            return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(), CommonStatusEnum.DEVICE_IS_BLACK.getValue());
+//        }
 
         // 判断乘客 是否有进行中的订单
         if (isPassengerOrderGoingon(orderRequest.getPassengerId()) > 0){
@@ -66,6 +77,32 @@ public class OrderInfoService {
 
         orderInfoMapper.insert(orderInfo);
         return ResponseResult.success("");
+    }
+
+    /**
+     * 是否是黑名单
+     * @param orderRequest
+     * @return
+     */
+    private boolean isBlackDevice(OrderRequest orderRequest) {
+        String deviceCode = orderRequest.getDeviceCode();
+        // 生成key
+        String deviceCodeKey = RedisPrefixUtils.blackDeviceCodePrefix + deviceCode;
+        Boolean aBoolean = stringRedisTemplate.hasKey(deviceCodeKey);
+        if (aBoolean){
+            String s = stringRedisTemplate.opsForValue().get(deviceCodeKey);
+            int i = Integer.parseInt(s);
+            if (i >= 2){
+                // 当前设备超过下单次数
+                return true;
+            }else {
+                stringRedisTemplate.opsForValue().increment(deviceCodeKey);
+            }
+
+        }else {
+            stringRedisTemplate.opsForValue().setIfAbsent(deviceCodeKey,"1",1L, TimeUnit.HOURS);
+        }
+        return false;
     }
 
     /**
