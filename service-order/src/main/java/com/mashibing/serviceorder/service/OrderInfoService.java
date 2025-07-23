@@ -10,7 +10,9 @@ import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.internalcommon.request.PriceRuleIsNewRequest;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
+import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2025-07-12
  */
 @Service
+@Slf4j
 public class OrderInfoService {
 
     @Autowired
@@ -35,6 +38,9 @@ public class OrderInfoService {
 
     @Autowired
     private ServicePriceClient servicePriceClient;
+
+    @Autowired
+    private ServiceDriverUserClient serviceDriverUserClient;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -45,6 +51,13 @@ public class OrderInfoService {
      * @return
      */
     public ResponseResult add(OrderRequest orderRequest) {
+
+        // 测试当前城市是否有可用的司机
+        ResponseResult<Boolean> availableDriver = serviceDriverUserClient.isAvailableDriver(orderRequest.getAddress());
+        log.info("测试城市是否有司机结果："+availableDriver.getData());
+        if (!availableDriver.getData()){
+            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),CommonStatusEnum.CITY_DRIVER_EMPTY.getValue());
+        }
 
         // 需要判断计价规则的版本是否为最新
         PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
