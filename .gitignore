@@ -1,0 +1,17 @@
+### IntelliJ IDEA ###
+.idea/*
+*.iws
+*.iml
+*.ipr
+.mvn
+mvnw*
+*/target/*
+/out/
+
+### MAC ###
+.DS_Store
+
+### Other ###
+logs/
+log
+temp/
