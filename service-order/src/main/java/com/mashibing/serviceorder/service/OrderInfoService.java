@@ -193,21 +193,21 @@ public class OrderInfoService {
                     // 查询当前车辆信息
                     QueryWrapper<Car> carQueryWrapper = new QueryWrapper<>();
                     carQueryWrapper.eq("id",carId);
-//
-//                    // 设置订单中和司机车辆相关的信息
-//                    orderInfo.setDriverId(driverId);
-//                    orderInfo.setDriverPhone(driverPhone);
-//                    orderInfo.setCarId(carId);
-//                    // 从地图中来
-//                    orderInfo.setReceiveOrderCarLongitude(longitude);
-//                    orderInfo.setReceiveOrderCarLatitude(latitude);
-//
-//                    orderInfo.setReceiveOrderTime(LocalDateTime.now());
-//                    orderInfo.setLicenseId(licenseId);
-//                    orderInfo.setVehicleNo(vehicleNo);
-//                    orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
-//
-//                    orderInfoMapper.updateById(orderInfo);
+
+                    // 设置订单中和司机车辆相关的信息
+                    orderInfo.setDriverId(driverId);
+                    orderInfo.setDriverPhone(driverPhone);
+                    orderInfo.setCarId(carId);
+                    // 从地图中来
+                    orderInfo.setReceiveOrderCarLongitude(longitude);
+                    orderInfo.setReceiveOrderCarLatitude(latitude);
+
+                    orderInfo.setReceiveOrderTime(LocalDateTime.now());
+                    orderInfo.setLicenseId(licenseId);
+                    orderInfo.setVehicleNo(vehicleNo);
+                    orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
+
+                    orderInfoMapper.updateById(orderInfo);
 //
 //                    // 通知司机
 //                    JSONObject driverContent = new  JSONObject();
